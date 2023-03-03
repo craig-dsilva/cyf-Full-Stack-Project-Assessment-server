@@ -1,6 +1,6 @@
-# fly.toml file generated for video-recommendations on 2023-03-01T22:20:54Z
+# fly.toml file generated for video-recommnedations on 2023-03-02T13:11:36Z
 
-app = "video-recommendations"
+app = "video-recommnedations"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
