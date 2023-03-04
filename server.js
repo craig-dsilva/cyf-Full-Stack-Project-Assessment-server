@@ -39,8 +39,7 @@ app.get("/", (req, res) => {
 
 // Posts a video from the client
 app.post("/", (req, res) => {
-  const { title, url } = req.body;
-  const date = new Date();
+  const { title, url, date } = req.body;
 
   if (!title || !url) {
     return res.status(400).json({
