@@ -1,3 +1,3 @@
-echo pwd
+pwd
 
 npm i
