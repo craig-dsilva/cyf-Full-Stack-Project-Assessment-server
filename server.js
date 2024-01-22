@@ -1,4 +1,3 @@
-// Test if CodeDeploy is working
 const express = require("express");
 const cors = require("cors");
 const { Client } = require("pg");
