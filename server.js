@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { Client } = require("pg");
+const { v4: uuidv4 } = require('uuid');
 require("dotenv").config();
 
 const app = express();
@@ -48,10 +49,12 @@ app.post("/", (req, res) => {
     });
   }
 
+  const id = uuidv4();
+
   client
     .query(
-      "INSERT INTO videos (title, url, rating, posted) VALUES ($1, $2, $3, $4)",
-      [title, url, 0, date]
+      "INSERT INTO videos (id, title, url, rating, posted) VALUES ($1, $2, $3, $4, $5)",
+      [id, title, url, 0, date]
     )
     .then(() => res.json("Successful"))
     .catch((e) => console.log(e));
@@ -68,7 +71,7 @@ app.get("/:id", (req, res) => {
 
 // Deletes a video
 app.delete("/:id", (req, res) => {
-  const id = Number(req.params.id);
+  const id = req.params.id;
 
   client
     .query("SELECT * FROM videos WHERE id = $1", [id])
@@ -94,7 +97,7 @@ app.put("/:id", (req, res) => {
   const { vote } = req.query;
 
   client.query(
-    `UPDATE videos SET rating = (SELECT rating FROM videos WHERE id  = $1) ${
+    `UPDATE videos SET rating = (SELECT rating FROM videos WHERE id = $1) ${
       vote === "up" ? "+ 1" : "- 1"
     } WHERE id = $1`,
     [id]
