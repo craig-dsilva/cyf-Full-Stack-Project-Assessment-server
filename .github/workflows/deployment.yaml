@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Get IP
+        run: IP=$(curl https://api.ipify.org)
+      - run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GH-actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --description "Allow SSH"
       - uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -16,3 +19,4 @@ jobs:
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.DIR }}
           SCRIPT_AFTER: pm2 restart server
+      - run: az network nsg rule delete -g ${{ secrets.AZURE_RG }} --nsg-name ${{ secrets.AZURE_NSG }} -n GH-actions
