@@ -21,7 +21,7 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GH-actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes $(IP) --description "Transfer files"
+      - run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GH-actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes ${{ IP }} --description "Transfer files"
       - uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
