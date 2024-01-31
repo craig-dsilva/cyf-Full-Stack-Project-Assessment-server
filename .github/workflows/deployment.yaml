@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   Deploy:
     runs-on: ubuntu-latest
@@ -14,11 +18,9 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          auth-type: IDENTITY
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          allow-no-subscriptions: true
       - run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GH-actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes --description "Allow SSH"
       - uses: easingthemes/ssh-deploy@main
         env:
