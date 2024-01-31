@@ -14,14 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Get IP
-        run: IP=$(curl https://api.ipify.org)
+        id: ip
+        uses: haythem/public-ip@v1.3
       - name: Azure Login
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GH-actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes ${{ IP }} --description "Transfer files"
+      - run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GH-actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes ${{ steps.ip.outputs.ipv4 }} --description "Transfer files"
       - uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
