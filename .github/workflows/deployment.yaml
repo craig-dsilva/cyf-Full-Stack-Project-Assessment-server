@@ -22,12 +22,15 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      - run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GH-actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes ${{ steps.ip.outputs.ipv4 }} --description "Transfer files"
-      - uses: easingthemes/ssh-deploy@main
+      - name: Add IP to Azure
+        run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GitHub-Actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes ${{ steps.ip.outputs.ipv4 }} --description "Transfer files"
+      - name: SSH Deploy
+        uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.HOST_IP }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.DIR }}
           SCRIPT_AFTER: pm2 restart server
-      - run: az network nsg rule delete -g ${{ secrets.AZURE_RG }} --nsg-name ${{ secrets.AZURE_NSG }} -n GH-actions
+      - name: Remove IP from Azure
+        run: az network nsg rule delete -g ${{ secrets.AZURE_RG }} --nsg-name ${{ secrets.AZURE_NSG }} -n GitHub-Actions
