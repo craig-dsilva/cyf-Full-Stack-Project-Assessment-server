@@ -12,6 +12,7 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
       - name: ACR Login
         uses: azure/docker-login@v1
         with:
