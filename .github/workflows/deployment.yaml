@@ -1,4 +1,4 @@
-name: Describing Cities Client
+name: Describing Cities Server
 
 on:
   push:
@@ -45,7 +45,8 @@ jobs:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          timeout: 60s
+          timeout: 300s
           script: bash videos.sh
       - name: Remove IP from Azure
+        if: always()
         run: az network nsg rule delete -g ${{ secrets.AZURE_RG }} --nsg-name ${{ secrets.AZURE_NSG }} -n GitHub-Actions
