@@ -20,8 +20,8 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
       - run: |
-          docker build . -t cyfvideos.azurecr.io/videos-recommendations
-          docker push cyfvideos.azurecr.io/videos-recommendations
+          docker build . -t cyfvideos.azurecr.io/video-recommendations
+          docker push cyfvideos.azurecr.io/video-recommendations
 
   Deploy:
     runs-on: ubuntu-latest
