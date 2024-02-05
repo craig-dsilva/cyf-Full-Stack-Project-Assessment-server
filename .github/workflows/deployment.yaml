@@ -30,6 +30,7 @@ jobs:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 60s
           script: bash videos.sh
       # - name: SSH Deploy
       #   uses: easingthemes/ssh-deploy@main
