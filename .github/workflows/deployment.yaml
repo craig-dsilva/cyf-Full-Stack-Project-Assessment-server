@@ -24,13 +24,20 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: Add IP to Azure
         run: az network nsg rule create --nsg-name ${{ secrets.AZURE_NSG }} --name GitHub-Actions --priority 300 -g ${{ secrets.AZURE_RG }} --destination-address-prefixes '*' --destination-port-ranges 22 --direction Inbound --source-address-prefixes ${{ steps.ip.outputs.ipv4 }} --description "Transfer files"
-      - name: SSH Deploy
-        uses: easingthemes/ssh-deploy@main
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.HOST_IP }}
-          REMOTE_USER: ${{ secrets.USERNAME }}
-          TARGET: ${{ secrets.DIR }}
-          SCRIPT_AFTER: pm2 restart server
+      - name: Docker run
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: bash videos.sh
+      # - name: SSH Deploy
+      #   uses: easingthemes/ssh-deploy@main
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     REMOTE_HOST: ${{ secrets.HOST_IP }}
+      #     REMOTE_USER: ${{ secrets.USERNAME }}
+      #     TARGET: ${{ secrets.DIR }}
+      #     SCRIPT_AFTER: pm2 restart server
       - name: Remove IP from Azure
         run: az network nsg rule delete -g ${{ secrets.AZURE_RG }} --nsg-name ${{ secrets.AZURE_NSG }} -n GitHub-Actions
