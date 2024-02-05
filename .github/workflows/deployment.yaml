@@ -13,15 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ACR build
-        id: acr
-        uses: azure/acr-build@v1
+        uses: azure/docker-login@v1
         with:
-          service_principal: ${{ secrets.AZURE_SERVICE_PRINCIPAL }}
-          service_principal_password: ${{ secrets.AZURE_SERVICE_PRINCIPAL_PASSWORD }}
-          tenant: ${{ secrets.AZURE_TENANT_ID }}
-          registry: cyfvideos
-          repository: video-recommendations
-          image: cyfvideos.azurecr.io/video-recommendations
+          login-server: cyfvideos.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - run: docker build . -t cyfvideos.azurecr.io/videos-recommendations:latest
+      - run: docker push cyfvideos.azurecr.io/videos-recommendations:latest
 
   Deploy:
     runs-on: ubuntu-latest
