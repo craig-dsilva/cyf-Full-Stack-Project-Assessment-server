@@ -18,8 +18,9 @@ jobs:
           login-server: cyfvideos.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - run: docker build -t cyfvideos.azurecr.io/videos-recommendations -f ./Dockerfile .
-      - run: docker push cyfvideos.azurecr.io/videos-recommendations
+        - run: pwd  
+      # - run: docker build -t cyfvideos.azurecr.io/videos-recommendations -f ./Dockerfile .
+      # - run: docker push cyfvideos.azurecr.io/videos-recommendations
 
   Deploy:
     runs-on: ubuntu-latest
